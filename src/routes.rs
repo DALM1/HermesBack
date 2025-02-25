@@ -14,8 +14,11 @@ async fn send_message(data: web::Json<SendMessageRequest>) -> impl Responder {
     let result = save_message(&data.room, &data.user, &data.content).await;
 
     match result {
-        Ok(_) => HttpResponse::Ok().json("Message sent successfully"),
-        Err(e) => HttpResponse::InternalServerError().body(format!("Error: {}", e)),
+        Ok(_) => HttpResponse::Ok().json("Message envoyé avec succès"),
+        Err(e) => {
+            eprintln!("Erreur lors de l'envoi du message: {:?}", e);
+            HttpResponse::InternalServerError().body(format!("Erreur: {}", e))
+        },
     }
 }
 
@@ -24,7 +27,10 @@ async fn get_messages_handler(room: web::Path<String>) -> impl Responder {
 
     match result {
         Ok(messages) => HttpResponse::Ok().json(messages),
-        Err(e) => HttpResponse::InternalServerError().body(format!("Error: {}", e)),
+        Err(e) => {
+            eprintln!("Erreur lors de la récupération des messages: {:?}", e);
+            HttpResponse::InternalServerError().body(format!("Erreur: {}", e))
+        },
     }
 }
 

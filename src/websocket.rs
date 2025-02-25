@@ -45,11 +45,11 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for MyWebSocket {
                 self.hb = Instant::now();
             }
             Ok(ws::Message::Text(text)) => {
-                println!("Received text message: {}", text);
+                println!(" {}", text);
                 self.handle_message(&text, ctx);
             }
             Ok(ws::Message::Close(reason)) => {
-                println!("Connection closed");
+                println!("CLOSED");
                 ctx.close(reason);
                 ctx.stop();
             }
@@ -82,7 +82,7 @@ impl MyWebSocket {
     fn hb(&self, ctx: &mut ws::WebsocketContext<Self>) {
         ctx.run_interval(HEARTBEAT_INTERVAL, |act, ctx| {
             if Instant::now().duration_since(act.hb) > CLIENT_TIMEOUT {
-                println!("WebSocket Client heartbeat failed, disconnecting!");
+                println!("WebSocket Client heartbeat failed, disconnecting...");
                 ctx.stop();
                 return;
             }
